@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+kafka-python
+pydantic
+python-dotenv
+apache-airflow
+dbt-core
+dbt-duckdb 

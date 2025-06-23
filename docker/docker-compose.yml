@@ -1,0 +1,43 @@
+services:
+  zookeeper:
+    image: bitnami/zookeeper:3.8.3
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: bitnami/kafka:3.5.1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+  spark:
+    image: bitnami/spark:3
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "8080:8080"
+
+  spark-worker:
+    image: bitnami/spark:3
+    depends_on: [spark]
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+
+  airflow:
+    image: apache/airflow:2.8.0
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+    volumes:
+      - ./dags:/opt/airflow/dags
+    ports:
+      - "8081:8080"
+    command: >
+      bash -c "airflow db init &&
+               airflow scheduler & airflow webserver"

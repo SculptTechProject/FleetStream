@@ -1,0 +1,74 @@
+[0m16:59:50.305115 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C11278F230>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C113B4BD90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C113B4B9D0>]}
+
+
+============================== 16:59:50.309531 | 5cba4aa1-4868-40fc-99ad-56fa3e518439 ==============================
+[0m16:59:50.309531 [info ] [MainThread]: Running with dbt=1.10.2
+[0m16:59:50.310106 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'profiles_dir': 'C:\\Users\\matie\\.dbt', 'log_path': 'logs', 'version_check': 'True', 'debug': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'introspect': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'invocation_command': 'dbt init fleetstream', 'target_path': 'None', 'static_parser': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m16:59:50.325390 [info ] [MainThread]: Creating dbt configuration folder at C:\Users\matie\.dbt
+[0m16:59:50.329598 [debug] [MainThread]: Starter project path: C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\include\starter_project
+[0m16:59:50.345870 [info ] [MainThread]: 
+Your new dbt project "fleetstream" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m16:59:50.346277 [info ] [MainThread]: Setting up your profile.
+[0m17:00:32.108705 [error] [MainThread]: Encountered an error:
+
+[0m17:00:32.110880 [error] [MainThread]: Traceback (most recent call last):
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\cli\requires.py", line 161, in wrapper
+    result, success = func(*args, **kwargs)
+                      ~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\cli\requires.py", line 111, in wrapper
+    return func(*args, **kwargs)
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\cli\main.py", line 483, in init
+    results = task.run()
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\task\init.py", line 346, in run
+    self.setup_profile(profile_name)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\task\init.py", line 262, in setup_profile
+    self.create_profile_from_target(adapter, profile_name=profile_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\task\init.py", line 179, in create_profile_from_target
+    self.create_profile_from_profile_template(profile_template, profile_name)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\task\init.py", line 163, in create_profile_from_profile_template
+    target = self.generate_target_from_input(prompts, initial_target)
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\dbt\task\init.py", line 129, in generate_target_from_input
+    target[key] = click.prompt(
+                  ~~~~~~~~~~~~^
+        text, default=default, hide_input=hide_input, type=type
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\click\termui.py", line 168, in prompt
+    value = prompt_func(prompt)
+  File "C:\Users\matie\Desktop\Projects\FleetStream\.venv\Lib\site-packages\click\termui.py", line 151, in prompt_func
+    raise Abort() from None
+click.exceptions.Abort
+
+[0m17:00:32.111755 [debug] [MainThread]: Command `dbt init` failed at 17:00:32.111676 after 41.90 seconds
+[0m17:00:32.111975 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C115B448A0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C115B584D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C115A73680>]}
+[0m17:00:32.112203 [debug] [MainThread]: Flushing usage events
+[0m17:00:32.673791 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m17:01:11.195623 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001A65335F230>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001A65472BD90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001A65472B9D0>]}
+
+
+============================== 17:01:11.198627 | fcaacbec-b7fa-4d16-8ace-9d3ea1a7012a ==============================
+[0m17:01:11.198627 [info ] [MainThread]: Running with dbt=1.10.2
+[0m17:01:11.199063 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'debug': 'False', 'log_path': 'logs', 'profiles_dir': 'C:\\Users\\matie\\.dbt', 'version_check': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'introspect': 'True', 'invocation_command': 'dbt init fleetstream', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True'}
+[0m17:01:11.214579 [info ] [MainThread]: A project called fleetstream already exists here.
+[0m17:01:11.215268 [debug] [MainThread]: Command `dbt init` succeeded at 17:01:11.215188 after 0.11 seconds
+[0m17:01:11.215480 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001A65472F6F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001A6557928D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001A654567CE0>]}
+[0m17:01:11.215723 [debug] [MainThread]: Flushing usage events
+[0m17:01:11.682289 [debug] [MainThread]: An error was encountered while trying to flush usage events
