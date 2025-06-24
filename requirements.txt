@@ -6,3 +6,4 @@ python-dotenv
 apache-airflow
 dbt-core
 dbt-duckdb 
+duckdb
