@@ -7,3 +7,4 @@ apache-airflow
 dbt-core
 dbt-duckdb 
 duckdb
+spark

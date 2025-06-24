@@ -5,4 +5,4 @@ docker exec -it docker-kafka-1 \
   --bootstrap-server localhost:9092 \
   --topic vehicle.telemetry.raw \
   --from-beginning \
-  --max-messages 5
+  --max-messages 150
