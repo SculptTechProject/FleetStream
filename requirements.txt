@@ -8,3 +8,4 @@ dbt-core
 dbt-duckdb 
 duckdb
 spark
+psycopg2

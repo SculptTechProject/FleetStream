@@ -17,14 +17,18 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
       - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     ports:
-      - "9092:29092"
+      - "9092:9092"
+    volumes:
+      - kafka_data:/bitnami/kafka 
   spark:
     image: bitnami/spark:3.5.1
     environment:
       - SPARK_MODE=master
     ports:
       - "8080:8080"
+      - "7077:7077"
 
   spark-worker:
     image: bitnami/spark:3.5.1
@@ -43,11 +47,12 @@ services:
       - "4041:4040"
     command: >
       spark-submit
-        --conf spark.ui.port=4040          \
-        --conf spark.driver.bindAddress=0.0.0.0 \
-        --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1
-        --master spark://spark:7077
-        /opt/bitnami/spark/app/stream_agg.py
+      --conf spark.ui.port=4040
+      --conf spark.driver.bindAddress=0.0.0.0
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1
+      --master spark://spark:7077
+      /opt/bitnami/spark/app/stream_agg.py
+
 
   airflow:
     image: apache/airflow:2.8.0
@@ -65,3 +70,19 @@ services:
     image: metabase/metabase:v0.47.3
     ports:
       - "3000:3000"
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: metriq
+      POSTGRES_PASSWORD: metriq
+      POSTGRES_DB: fleet
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  kafka_data:
+  airflow_data:
+  pg_data:
