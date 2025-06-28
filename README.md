@@ -43,8 +43,8 @@ Everything is wrapped in **Docker Compose** – start/stop the whole stack with
 $ git clone https://github.com/<your‑handle>/fleetstream.git
 $ cd fleetstream/docker
 
-# 2. Build and launch the entire stack (detached)
-$ docker compose up --build -d
+# 2. Build and launch the entire stack (with you dont want to check the logs please use -d flag (detached))
+$ docker compose up --build
 
 # 3. (optional) Create topics if Kafka is fresh
 $ bin/create_topics.sh        # helper script
