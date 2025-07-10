@@ -27,7 +27,8 @@ services:
     volumes:
       - kafka_data:/bitnami/kafka
     healthcheck:
-      test: [
+      test:
+        [
           "CMD",
           "kafka-topics.sh",
           "--bootstrap-server",
@@ -111,7 +112,7 @@ services:
       - thrift_ivy:/tmp/ivy
     environment:
       - HOME=/tmp
-      - SPARK_SUBMIT_OPTIONS=--conf spark.jars.ivy=false
+      - SPARK_SUBMIT_OPTIONS=--conf spark.jars.ivy=/tmp/ivy
     entrypoint: ["/opt/bitnami/spark/sbin/start-thriftserver.sh"]
     command:
       [
@@ -146,6 +147,18 @@ services:
         condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  init-kafka:
+    image: bitnami/kafka:3.5.1
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "-c"]
+    command: >
+      kafka-topics.sh --bootstrap-server kafka:9092
+      --create --if-not-exists
+      --topic vehicle.telemetry.raw
+      --partitions 1 --replication-factor 1
 
 volumes:
   kafka_data:
