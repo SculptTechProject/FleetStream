@@ -160,6 +160,8 @@ async def lifespan(_: FastAPI):
     finally:
         await sim.stop()
         await producer.stop()
+    await producer.client._wait_on_metadata('vehicle.telemetry.raw', timeout_ms=10_000)
+
 
 
 app = FastAPI(title="Vehicle Simulator", lifespan=lifespan)

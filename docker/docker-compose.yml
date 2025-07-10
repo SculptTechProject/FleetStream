@@ -16,7 +16,7 @@ services:
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CFG_LISTENERS=INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka:9092,EXTERNAL://localhost:29092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka:9092,EXTERNAL://localhost:9092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
       - ALLOW_PLAINTEXT_LISTENER=yes
@@ -27,8 +27,7 @@ services:
     volumes:
       - kafka_data:/bitnami/kafka
     healthcheck:
-      test:
-        [
+      test: [
           "CMD",
           "kafka-topics.sh",
           "--bootstrap-server",
@@ -37,7 +36,7 @@ services:
         ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
   spark:
     image: bitnami/spark:3.5.1
     environment:
