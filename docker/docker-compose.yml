@@ -97,11 +97,11 @@ services:
 
   spark-thrift:
     image: bitnami/spark:3.5.1
-    depends_on:
-      - spark
+    depends_on: [spark]
     volumes:
       - thrift_ivy:/tmp/ivy
     environment:
+      - HOME=/tmp
       - SPARK_SUBMIT_OPTIONS=--conf spark.jars.ivy=false
     entrypoint: ["/opt/bitnami/spark/sbin/start-thriftserver.sh"]
     command:

@@ -45,7 +45,7 @@ agg = (raw.groupBy(window(col("timestamp"), "1 minute"),
 
 query = (agg.writeStream
              .outputMode("complete")
-             .format("console")
+             .format("parquet")
              .option("truncate", "false")
              .start())
 

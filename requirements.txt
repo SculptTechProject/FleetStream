@@ -9,3 +9,4 @@ dbt-duckdb
 duckdb
 spark
 psycopg2
+aiokafka
