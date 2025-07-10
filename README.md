@@ -43,8 +43,8 @@ Everything is wrapped in **Docker Compose** – start/stop the whole stack with
 $ git clone https://github.com/<your‑handle>/fleetstream.git
 $ cd fleetstream/docker
 
-# 2. Build and launch the entire stack (detached)
-$ docker compose up --build -d
+# 2. Build and launch the entire stack (with you dont want to check the logs please use -d flag (detached))
+$ docker compose up --build
 
 # 3. (optional) Create topics if Kafka is fresh
 $ bin/create_topics.sh        # helper script
@@ -105,7 +105,7 @@ Once the containers are up and humming you’ll probably want to *see something*
    * Add a new *PostgreSQL* database connection **only if** you’ve enabled the future Postgres sink (see Roadmap).
    * Click **Skip** on sample data, then **Ask a question → Native query** and point it to the `vehicle.telemetry.agg` topic via the Kafka JDBC connector (already bundled).
 
-2. **Airflow sanity check**
+2. **Airflow sanity check** (soon)
    * Visit [http://localhost:8081](http://localhost:8081) (credentials: `admin` / `admin`).
    * Enable the bundled example DAG *`fleetstream_daily_housekeeping`* – it just prints the size of each Kafka topic to the logs every hour.
    * Trigger it manually once and watch the task logs populate.
