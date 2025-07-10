@@ -8,6 +8,7 @@ services:
 
   kafka:
     image: bitnami/kafka:3.5.1
+    hostname: kafka
     depends_on:
       - zookeeper
     environment:
@@ -18,10 +19,23 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     ports:
-      - "9092:9092"
+      - "9092:29092"
     volumes:
-      - kafka_data:/bitnami/kafka 
+      - kafka_data:/bitnami/kafka
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "kafka-topics.sh",
+          "--bootstrap-server",
+          "localhost:9092",
+          "--list",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   spark:
     image: bitnami/spark:3.5.1
     environment:
@@ -53,7 +67,6 @@ services:
       --master spark://spark:7077
       /opt/bitnami/spark/app/stream_agg.py
 
-
   airflow:
     image: apache/airflow:2.8.0
     environment:
@@ -82,7 +95,51 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  spark-thrift:
+    image: bitnami/spark:3.5.1
+    depends_on:
+      - spark
+    volumes:
+      - thrift_ivy:/tmp/ivy
+    environment:
+      - SPARK_SUBMIT_OPTIONS=--conf spark.jars.ivy=false
+    entrypoint: ["/opt/bitnami/spark/sbin/start-thriftserver.sh"]
+    command:
+      [
+        "--master",
+        "spark://spark:7077",
+        "--hiveconf",
+        "hive.server2.thrift.port=10001",
+        "--hiveconf",
+        "hive.server2.thrift.bind.host=0.0.0.0",
+      ]
+    ports:
+      - "10001:10001"
+      - "4042:4040" # UI
+    restart: unless-stopped
+
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-spark:1.9.latest
+    depends_on:
+      - spark-thrift
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+      - ${HOME}/.dbt:/root/.dbt:ro
+    command: tail -f /dev/null
+
+  api:
+    build:
+      context: ../services
+      dockerfile: Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
 volumes:
   kafka_data:
   airflow_data:
   pg_data:
+  thrift_ivy:

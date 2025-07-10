@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: fct_vehicle_telemetry_daily
+    description: >
+      Dzienna tabela faktów: 1 wiersz = (pojazd, dzień) 
+      ze statystykami wyciągniętymi z surowego streamu.
+    columns:
+      - name: vehicle_id
+        description: Klucz techniczny pojazdu (UUID skrócony do 8 znaków).
+        tests: [not_null]
+      - name: event_dt
+        description: Data (UTC) agregacji.
+        tests: [not_null]
+      - name: avg_speed_kmh
+        description: Średnia prędkość w km/h dla danego dnia.
+      - name: max_speed_kmh
+        description: Maksymalna prędkość w km/h w danym dniu.
+      - name: avg_rpm
+        description: Średnie obroty silnika.
+      - name: avg_fuel_pct
+        description: Średni poziom paliwa [%].
+      - name: fault_hits
+        description: Liczba eventów z co najmniej jednym kodem błędu.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5]
+
+  - name: dim_vehicle
+    description: >
+      Wymiar pojazdu – na razie tylko lista ID;  
+      w przyszłości rozbuduj o metadane (VIN, marka, rocznik).
+    columns:
+      - name: vehicle_id
+        tests: [unique, not_null]

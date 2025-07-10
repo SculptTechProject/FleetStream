@@ -1,12 +1,11 @@
-
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'fleetstream'
-version: '1.0.0'
+name: "fleetstream"
+version: "1.0.0"
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'fleetstream'
+profile: "fleetstream"
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -18,10 +17,9 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-clean-targets:         # directories to be removed by `dbt clean`
+clean-targets: # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
-
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -30,7 +28,16 @@ clean-targets:         # directories to be removed by `dbt clean`
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
-  fleetstream:
-    # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+  # Ustawienia globalne dla całego projektu
+  +persist_docs: { relation: true, columns: true } # opisy lądują w DB
+  +column_types: {} # Spark sam dobierze
+  +file_format: parquet # 💾 kolumnowy
+  +incremental_strategy: merge # MERGE INTO dla Spark
+
+  fleetstream: # ← katalog główny pod models/
+    staging: # models/staging/…
+      +materialized: incremental
+      +schema: stg # db.stg_*
+    marts: # models/marts/…
+      +materialized: table # dzienne fakty jako fizyczna tabela
+      +schema: mart # db.mart_*

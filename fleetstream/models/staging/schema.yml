@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_vehicle_telemetry
+    description: "Oczyszczony strumień telemetryczny (1 wiersz = 1 zdarzenie)."
+    columns:
+      - name: event_id
+        tests: [unique, not_null]
+      - name: vehicle_id
+        tests: [not_null]
+      - name: event_ts
+        tests: [not_null]
+      - name: fault_codes
+        description: "Lista kodów OBD-II jeśli wystąpiły."
