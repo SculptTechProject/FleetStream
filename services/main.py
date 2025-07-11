@@ -27,10 +27,15 @@ from typing import Optional
 from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI, HTTPException
 
-# ────────────────────────────────  Config  ────────────────────────────────
-BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
-TOPIC: str = os.getenv("KAFKA_TOPIC", "vehicle.telemetry.raw")
+# --- Configure ----------------------------------------------------
 VEHICLE_ID = os.getenv("VEHICLE_ID", "TESTCAR01")
+
+BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+TOPIC      = os.getenv("KAFKA_TOPIC", "vehicle.telemetry.raw")
+# --------------------------------------------------------------------
+
+# Typical speed limits for different road types (km/h)
+SPEED_LIMITS = {"urban": 50, "rural": 90, "highway": 130}
 
 # ──────────────────────────  Transmission  ──────────────────────────
 # rpm per 1 km/h for each forward gear – simple, but good enough
@@ -38,6 +43,9 @@ GEAR_SPEED_RPM = {1: 110, 2: 70, 3: 50, 4: 40, 5: 33, 6: 28}
 MAX_GEAR = max(GEAR_SPEED_RPM)
 UPSHIFT_RPM = 3100   # change up when above this
 DOWNSHIFT_RPM = 1300 # change down when below this
+
+# Hard cap on vehicle top speed (km/h) so the simulator stays realistic
+MAX_SPEED = 180
 
 # ────────────────────────────────  Physics  ───────────────────────────────
 @dataclass
@@ -50,6 +58,10 @@ class CarState:
     rpm: int = 800
     gear: int = 1  # start in first
     racing_ticks: int = 0  # counts down “sprint” mode
+    # simple traffic / road context
+    road_type: str = "urban"   # 'urban', 'rural', 'highway'
+    section_ticks: int = 0     # how long we stay on current road section
+    red_light_ticks: int = 0   # counts down stop at traffic lights
     fuel_pct: float = 95.0  # %
     faults: list[str] = None
 
@@ -69,21 +81,48 @@ class CarState:
 
 def advance(state: CarState, dt: float = 1.0) -> None:
     """Advance *state* by *dt* seconds with simple kinematics."""
-    # Decide driver's intention
-    if state.racing_ticks > 0:
-        base_accel = random.uniform(1.5, 4.0)  # keep pushing while racing
-        state.racing_ticks -= 1
+    # ── Road‑type / traffic‑light logic ───────────────────────────────
+    if state.section_ticks == 0:
+        # pick a new road type section
+        state.road_type = random.choices(
+            ["urban", "rural", "highway"], weights=[0.5, 0.3, 0.2]
+        )[0]
+        # stay on the same road type for 20‑90 s → shorter segments, more variety
+        state.section_ticks = random.randint(20, 90)
+    state.section_ticks -= 1
+
+    # chance of a red light only in urban areas (once every ~100 s)
+    if state.road_type == "urban" and state.red_light_ticks == 0 and random.random() < 0.05:
+        state.red_light_ticks = random.randint(5, 20)
+
+    # determine target speed
+    if state.red_light_ticks > 0:
+        target_speed = 0.0
+        state.red_light_ticks -= 1
     else:
-        base_accel = random.uniform(-2.0, 2.0)
+        # Pick a target within ±15 km/h of the legal limit to mimic real‑world
+        # traffic flow (some cars slower, some a touch faster).
+        base_limit = SPEED_LIMITS[state.road_type]
+        target_speed = max(0.0, min(MAX_SPEED, base_limit + random.uniform(-15, 5)))
 
-    # 0.1 % chance to start a sudden sprint
-    if state.racing_ticks == 0 and random.random() < 0.001:
+    # proportional controller towards target speed (+ small noise)
+    delta_v = target_speed - state.speed
+    # livelier dynamics – quicker acceleration/deceleration + a bit more noise
+    accel = max(min(delta_v * 0.5, 4.0), -4.5) + random.uniform(-1.0, 1.0)
+
+    # keep the occasional “sprint” behaviour
+    if state.racing_ticks > 0:
+        accel += random.uniform(1.0, 2.0)
+        state.racing_ticks -= 1
+    elif state.racing_ticks == 0 and random.random() < 0.001:
         state.racing_ticks = random.randint(5, 15)
-
-    accel = base_accel
 
     speed_ms = max(state.speed / 3.6 + accel * dt, 0.0)
     state.speed = speed_ms * 3.6
+    # Cap speed to MAX_SPEED so the car doesn’t turn into a rocket
+    if state.speed > MAX_SPEED:
+        state.speed = MAX_SPEED
+        speed_ms = MAX_SPEED / 3.6
 
     # Heading meanders slightly
     state.heading = (state.heading + random.uniform(-3, 3)) % 360
