@@ -32,15 +32,24 @@ BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
 TOPIC: str = os.getenv("KAFKA_TOPIC", "vehicle.telemetry.raw")
 VEHICLE_ID = os.getenv("VEHICLE_ID", "TESTCAR01")
 
+# ──────────────────────────  Transmission  ──────────────────────────
+# rpm per 1 km/h for each forward gear – simple, but good enough
+GEAR_SPEED_RPM = {1: 110, 2: 70, 3: 50, 4: 40, 5: 33, 6: 28}
+MAX_GEAR = max(GEAR_SPEED_RPM)
+UPSHIFT_RPM = 3100   # change up when above this
+DOWNSHIFT_RPM = 1300 # change down when below this
+
 # ────────────────────────────────  Physics  ───────────────────────────────
 @dataclass
 class CarState:
     vehicle_id: str = VEHICLE_ID
-    lat: float = 52.2304  # Warszawa centrum
-    lon: float = 21.0122
+    lat: float = 52.2304  # Warsaw lat
+    lon: float = 21.0122 # Warsaw lon
     speed: float = 0.0  # km/h
     heading: float = 90.0  # degrees (0°=N)
     rpm: int = 800
+    gear: int = 1  # start in first
+    racing_ticks: int = 0  # counts down “sprint” mode
     fuel_pct: float = 95.0  # %
     faults: list[str] = None
 
@@ -52,6 +61,7 @@ class CarState:
             "location": {"lat": round(self.lat, 6), "lon": round(self.lon, 6)},
             "speed_kmh": round(self.speed, 1),
             "engine_rpm": self.rpm,
+            "gear": self.gear,
             "fuel_level_pct": round(self.fuel_pct, 1),
             "fault_codes": self.faults or [],
         }
@@ -59,8 +69,19 @@ class CarState:
 
 def advance(state: CarState, dt: float = 1.0) -> None:
     """Advance *state* by *dt* seconds with simple kinematics."""
-    # Smooth acceleration / deceleration (±2 m/s²)
-    accel = random.uniform(-2, 2)  # m/s²
+    # Decide driver's intention
+    if state.racing_ticks > 0:
+        base_accel = random.uniform(1.5, 4.0)  # keep pushing while racing
+        state.racing_ticks -= 1
+    else:
+        base_accel = random.uniform(-2.0, 2.0)
+
+    # 0.1 % chance to start a sudden sprint
+    if state.racing_ticks == 0 and random.random() < 0.001:
+        state.racing_ticks = random.randint(5, 15)
+
+    accel = base_accel
+
     speed_ms = max(state.speed / 3.6 + accel * dt, 0.0)
     state.speed = speed_ms * 3.6
 
@@ -87,8 +108,20 @@ def advance(state: CarState, dt: float = 1.0) -> None:
     state.lat = math.degrees(phi2)
     state.lon = math.degrees(lam2)
 
-    # Engine RPM roughly proportional to speed (idle 800 RPM)
-    state.rpm = int(800 + state.speed * 45)
+    # Transmission model
+    if state.speed == 0:
+        state.rpm = 800  # idle
+    else:
+        coef = GEAR_SPEED_RPM[state.gear]
+        state.rpm = max(800, int(state.speed * coef))
+
+    # Simple shift logic
+    if state.rpm > UPSHIFT_RPM and state.gear < MAX_GEAR:
+        state.gear += 1
+        state.rpm = max(800, int(state.speed * GEAR_SPEED_RPM[state.gear]))
+    elif state.rpm < DOWNSHIFT_RPM and state.gear > 1:
+        state.gear -= 1
+        state.rpm = max(800, int(state.speed * GEAR_SPEED_RPM[state.gear]))
 
     # Fuel consumption: simple quadratic curve with minimum ~5 l/100km @ 60 km/h
     l_per_100km = 5 + 0.04 * (state.speed - 60) ** 2 / 60

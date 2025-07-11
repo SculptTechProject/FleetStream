@@ -22,6 +22,7 @@ schema = StructType([
       ])),
       StructField("speed_kmh", DoubleType()),
       StructField("engine_rpm", DoubleType()),
+      StructField("gear", DoubleType()),
       StructField("fuel_level_pct", DoubleType()),
       StructField("fault_codes", ArrayType(StringType()))
 ])
