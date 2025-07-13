@@ -118,10 +118,10 @@ Once the containers are up and humming you’ll probably want to *see something*
    * Visit [http://localhost:8081](http://localhost:8081) (credentials: **admin** / **admin**).
    * Enable the bundled example DAG *fleetstream\_daily\_housekeeping* – it just prints the size of each Kafka topic to the logs every hour.
    * Trigger it manually once and watch the task logs populate.
-3. **Build your first dashboard**
+3. **Build your first dashboard** (soon)
    * In Metabase, create a new *Question* with **avg(speed\_kmh)** grouped by *5‑minute bins* and **vehicle\_id**.
    * Save it to a dashboard named ​*Fleet overview*​.
-4. **Verify Spark is streaming**
+4. **Verify Spark is streaming** 
    * Spark UI → **Streaming** tab → confirm the *Input Rate* isn’t flat‑lining.
    * Click on the latest batch to inspect operator metrics.
 
