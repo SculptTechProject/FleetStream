@@ -8,14 +8,15 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 cur.execute("""
 CREATE TABLE IF NOT EXISTS telemetry_raw (
-  id SERIAL PRIMARY KEY,
-  vehicle_id TEXT,
-  ts TIMESTAMP,
-  lat DOUBLE PRECISION,
-  lon DOUBLE PRECISION,
-  speed_kmh DOUBLE PRECISION,
-  fuel_pct DOUBLE PRECISION,
-  fault_codes TEXT[]
+    id SERIAL PRIMARY KEY,
+    vehicle_id TEXT,
+    ts TIMESTAMP,
+    lat DOUBLE PRECISION,
+    lon DOUBLE PRECISION,
+    speed_kmh DOUBLE PRECISION,
+    engine_rpm DOUBLE PRECISION,
+    fuel_pct DOUBLE PRECISION,
+    fault_codes TEXT[]
 );
 """)
 conn.commit()
@@ -33,14 +34,15 @@ for msg in consumer:
     d = msg.value
     cur.execute(
         """INSERT INTO telemetry_raw
-           (vehicle_id, ts, lat, lon, speed_kmh, fuel_pct, fault_codes)
-           VALUES (%s,%s,%s,%s,%s,%s,%s)""",
+           (vehicle_id, ts, lat, lon, speed_kmh, engine_rpm, fuel_pct, fault_codes)
+           VALUES (%s,%s,%s,%s,%s,%s,%s, %s)""",
         (
             d["vehicle_id"],
             d["timestamp"],
             d["location"]["lat"],
             d["location"]["lon"],
             d["speed_kmh"],
+            d["engine_rpm"],
             d["fuel_level_pct"],
             d["fault_codes"]
         )

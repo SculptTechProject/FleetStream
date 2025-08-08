@@ -139,6 +139,7 @@ celerybeat.pid
 
 # Environments
 .env
+<<<<<<< HEAD
 .envrc
 .venv
 env/
@@ -204,3 +205,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+=======
+.idea
+>>>>>>> 2684a40f45d82e4312c850c25b6a0542103b8d41
