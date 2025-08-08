@@ -58,10 +58,7 @@ $ bin/create_topics.sh        # helper script
 $ ../scripts/simulation_start.sh   # ~1 msg/s by default
 
 # 6. Peek at the results. Peek at the results
-$ docker exec -it docker-kafka-1 \
-  /opt/bitnami/kafka/bin/kafka-console-consumer.sh \
-  --bootstrap-server kafka:9092 \
-  --topic vehicle.telemetry.agg --from-beginning | jq '.'
+./consume.sh
 ```
 
 > To stop and wipe volumes: **docker compose down -v**.
@@ -152,4 +149,5 @@ Feel free to crank the event rate with **curl -X POST http://localhost:8000/star
 Released under the MIT License.
 
 Have fun & drive safe – even if it’s only bytes on the road 🚗💨
+
 
