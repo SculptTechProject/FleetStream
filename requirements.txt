@@ -10,3 +10,4 @@ duckdb
 spark
 psycopg2
 aiokafka
+black
