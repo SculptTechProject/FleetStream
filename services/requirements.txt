@@ -5,3 +5,5 @@ python-dotenv
 psycopg2-binary
 aiokafka
 flake8
+uvicorn[standard]>=0.30
+websockets>=12 

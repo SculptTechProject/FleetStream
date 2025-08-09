@@ -11,3 +11,8 @@ spark
 psycopg2
 aiokafka
 black
+uvicorn[standard]>=0.30
+websockets>=12 
+pandas
+matplotlib
+numpy
