@@ -87,7 +87,7 @@ curl "http://localhost:8000/telemetry/violations?limit=50"
 curl -L -o telemetry.csv "http://localhost:8000/telemetry/export.csv?limit=2000"
 ```
 
-### WebSocket (optional)
+### WebSocket
 
 - Endpoint: `ws://localhost:8000/ws`
 - Messages:
