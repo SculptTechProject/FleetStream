@@ -1,5 +1,6 @@
 # FleetStream — Vehicle Telemetry Simulator & Dashboard
 
+[![Release](https://img.shields.io/github/v/release/SculptTechProject/FleetStream)](https://github.com/SculptTechProject/FleetStream/releases)
 [![License](https://img.shields.io/github/license/SculptTechProject/FleetStream)](https://github.com/SculptTechProject/FleetStream/blob/main/LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/SculptTechProject/FleetStream)](https://github.com/SculptTechProject/FleetStream/commits)
 
