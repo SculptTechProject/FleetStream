@@ -1,5 +1,10 @@
 # FleetStream — Vehicle Telemetry Simulator & Dashboard
 
+[![Build (Python)](https://img.shields.io/github/actions/workflow/status/SculptTechProject/FleetStream/ci-python.yml?branch=main)](https://github.com/SculptTechProject/FleetStream/actions/workflows/ci-python.yml)
+[![Release](https://img.shields.io/github/v/release/SculptTechProject/FleetStream)](https://github.com/SculptTechProject/FleetStream/releases)
+[![License](https://img.shields.io/github/license/SculptTechProject/FleetStream)](https://github.com/SculptTechProject/FleetStream/blob/main/LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/SculptTechProject/FleetStream)](https://github.com/SculptTechProject/FleetStream/commits)
+
 FastAPI + Kafka + (optional) Spark Structured Streaming.
 One deterministic car emits realistic telemetry; a lightweight web dashboard shows live location, speed/RPM charts, heatmap, and a colored trail. You can start/stop the simulator from the UI and export CSV for analysis.
 
