@@ -167,7 +167,3 @@ Run inside your Spark container or locally (adjust bootstrap servers and sink pa
 - The simulator protects against unreal speeds and uses a simple but realistic gear/RPM model.
 
 ---
-
-## License
-
-MIT 👀️
