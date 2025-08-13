@@ -112,6 +112,9 @@ Open **`http://localhost:8000/dashboard`**.
 - **Trail** toggle shows the colored path; **Heatmap** toggle shows density (weighted by speed, violations highlighted).
 - **Export CSV** downloads recent events for analysis.
 
+<img width="1907" height="985" alt="image" src="https://github.com/user-attachments/assets/38e469ce-b3ed-41b6-97a1-7355a787bc44" />
+
+
 ![1754770129260](images/README/1754770129260.png)
 
 ---
