@@ -14,7 +14,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 #      - name: Wait for database
 #        run: cd scripts && docker compose run --rm app python ./wait_for_db.sh
 #      - name: Test
